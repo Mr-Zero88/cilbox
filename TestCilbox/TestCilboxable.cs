@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using System.Collections.Specialized;
 using System.Collections;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using TestCilbox;
@@ -724,6 +725,36 @@ namespace TestCilbox
 			object boxedIntArg = 7;
 			Validator.Set("isinst BoxedInt is bool", (boxedIntArg is bool).ToString());
 			Validator.Set("isinst BoxedInt is int", (boxedIntArg is int).ToString());
+
+			int negInt = 42;
+			Validator.Set("NegInt", (-negInt).ToString());
+
+			int negIntMin = int.MinValue;
+			Validator.Set("NegIntMin", (-negIntMin).ToString());
+
+			long negLong = 100L;
+			Validator.Set("NegLong", (-negLong).ToString());
+
+			long negLongMin = long.MinValue;
+			Validator.Set("NegLongMin", (-negLongMin).ToString());
+
+			float negFloat = 0.1f;
+			Validator.Set("NegFloat", (-negFloat).ToString());
+
+			float negFloatNan = float.NaN;
+			Validator.Set("NegFloatNan", (-negFloatNan).ToString());
+
+			float negFloatInfinity = float.PositiveInfinity;
+			Validator.Set("NegFloatInfinity", (-negFloatInfinity).ToString(CultureInfo.InvariantCulture));
+
+			double negDouble = 0.1d;
+			Validator.Set("NegDouble", (-negDouble).ToString());
+
+			double negDoubleNan = double.NaN;
+			Validator.Set("NegDoubleNan", (-negDoubleNan).ToString());
+
+			double negDoubleInfinity = double.NegativeInfinity;
+			Validator.Set("NegDoubleInfinity", (-negDoubleInfinity).ToString(CultureInfo.InvariantCulture));
 		}
 
 		public void Update()

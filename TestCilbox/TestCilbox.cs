@@ -38,7 +38,9 @@ namespace TestCilbox
 			"System.Diagnostics.Stopwatch",
 			"System.DivideByZeroException",
 			"System.Exception",
+			"System.Globalization.CultureInfo",
 			"System.IDisposable",
+			"System.IFormatProvider",
 			"System.IndexOutOfRangeException",
 			"System.Int16",
 			"System.Int32",
@@ -890,6 +892,17 @@ namespace TestCilbox
 			Validator.Validate( "isinst BoxedFloat is float", "True" );
 			Validator.Validate( "isinst BoxedInt is bool", "False" );
 			Validator.Validate( "isinst BoxedInt is int", "True" );
+
+			Validator.Validate("NegInt", "-42");
+			Validator.Validate("NegIntMin", "-2147483648");
+			Validator.Validate("NegLong", "-100");
+			Validator.Validate("NegLongMin", "-9223372036854775808");
+			Validator.Validate("NegFloat", "-0.1");
+			Validator.Validate("NegFloatNan", "NaN");
+			Validator.Validate("NegFloatInfinity", "-Infinity");
+			Validator.Validate("NegDouble", "-0.1");
+			Validator.Validate("NegDoubleNan", "NaN");
+			Validator.Validate("NegDoubleInfinity", "Infinity");
 
 			Cilbox.CilboxProxy getCompDriverProxy = getCompDriverGo.GetComponents<Cilbox.CilboxProxy>()[0];
 			InvokeProxyMethod( getCompDriverProxy, "Start" );

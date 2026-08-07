@@ -956,7 +956,24 @@ spiperf.Begin();
 						break;
 					}
 
-					case 0x65: stackBuffer[sp].l = -stackBuffer[sp].l; break;
+					case 0x65: // neg
+					{
+						ref StackElement s = ref stackBuffer[sp];
+						switch (s.type)
+						{
+							case StackType.Float:
+								s.f = -s.f;
+								break;
+							case StackType.Double:
+								s.d = -s.d;
+								break;
+							default:
+								s.l = -s.l;
+								break;
+						}
+						break;
+					}
+
 					case 0x66: stackBuffer[sp].e ^= 0xffffffffffffffff; break;
 
 					// XXX TODO: Perf improvement, detect float-to-int conversions and fast-path them.
