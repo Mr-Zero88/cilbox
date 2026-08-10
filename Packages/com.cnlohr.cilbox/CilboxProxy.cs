@@ -336,11 +336,7 @@ namespace Cilbox
 						continue;
 					}
 
-					bool bIsObject = LoadObjectFromProxyField( spf, out object o, cls.instanceFieldNames[i] );
-					if( bIsObject )
-						fields[i].LoadObject( o );
-					else
-						fields[i].Load( o );
+					LoadProxyFieldStackElement( spf, ref fields[i], cls.instanceFieldNames[i] );
 				}
 
 
@@ -357,8 +353,8 @@ namespace Cilbox
 		}
 
 
-		// Returns: true if is object, otherwise is primitive.
-		private bool LoadObjectFromProxyField( SerializedProxyField spf, out object oOut, String rootFieldName )
+		// Loads the reference StackElement with the appropriate data
+		private void LoadProxyFieldStackElement( SerializedProxyField spf, ref StackElement refElement, String rootFieldName )
 		{
 			ProxyFieldType ft = (ProxyFieldType)spf.fieldType;
 			List<UnityEngine.Object> objectSlots = runtimeFieldsObjects ?? fieldsObjects;
@@ -378,9 +374,9 @@ namespace Cilbox
 
 				if (spf.objectRefIsNull)
 				{
-					// This field was null when serialized, so just return null
-					oOut = null;
-					return true;
+					// This field was null when serialized, so just load null
+					refElement.LoadObject(null);
+					return;
 				}
 
 				UnityEngine.Object o = objectSlots[iFO];
@@ -390,12 +386,12 @@ namespace Cilbox
 					if (o is CilboxProxy cilboxProxy)
 						cilboxProxy.RuntimeProxyLoad();
 
-					oOut = o;
+					refElement.LoadObject(o);
 
 					// Remove reference out of the fieldsObjects array.
 					objectSlots[iFO] = null;
 
-					return true;
+					return;
 				}
 
 				Debug.LogWarning(
@@ -419,8 +415,8 @@ namespace Cilbox
 					}
 					else // type is null and not a Cilbox class
 					{
-						oOut = null;
-						return true;
+						refElement.LoadObject(null);
+						return;
 					}
 				}
 
@@ -460,49 +456,33 @@ namespace Cilbox
 				{
 					for( int j = 0; j < aLen; j++ )
 					{
-						LoadObjectFromProxyField( spf.arrayElements[j], out object o, rootFieldName );
-						arr.SetValue( o, j );
+						StackElement temp = default;
+						LoadProxyFieldStackElement( spf.arrayElements[j], ref temp, rootFieldName );
+						arr.SetValue( temp.AsObject(), j );
 					}
 				}
 
-				oOut = arr;
-				return true;
+				refElement.LoadObject(arr);
+				return;
 			}
 
 			case ProxyFieldType.String:
 			{
-				oOut = spf.data;
-				return false;
+				refElement.LoadObject(spf.data);
+				return;
 			}
 
 			case ProxyFieldType.Primitive:
 			{
-				// Slow path — only reached if a caller didn't short-circuit. Re-boxes from the
-				// 16-byte PrimitivePayload (no object slot, so the StackElement.AsObject branches
-				// for Address/NativeHandle/Object don't apply here).
-				oOut = spf.primitiveValue.type switch
-				{
-					StackType.Boolean => spf.primitiveValue.b,
-					StackType.Sbyte => (sbyte)spf.primitiveValue.l,
-					StackType.Byte => (byte)spf.primitiveValue.e,
-					StackType.Short => (short)spf.primitiveValue.l,
-					StackType.Ushort => (ushort)spf.primitiveValue.e,
-					StackType.Int => (int)spf.primitiveValue.l,
-					StackType.Uint => (uint)spf.primitiveValue.e,
-					StackType.Long => spf.primitiveValue.l,
-					StackType.Ulong => spf.primitiveValue.e,
-					StackType.Float => spf.primitiveValue.f,
-					StackType.Double => spf.primitiveValue.d,
-					_ => throw new NotSupportedException($"PrimitivePayload cannot box StackType {spf.primitiveValue.type}")
-				};
-				return false;
+				spf.primitiveValue.ToStackElement(ref refElement);
+				return;
 			}
 
 			case ProxyFieldType.Json:
 			{
 				Type t = box.usage.GetNativeTypeFromDescriptor( spf.elementType );
-				oOut = JsonUtility.FromJson(spf.data, t);
-				return true;
+				refElement.LoadObject(JsonUtility.FromJson(spf.data, t));
+				return;
 			}
 
 			case ProxyFieldType.Empty:
@@ -510,8 +490,7 @@ namespace Cilbox
 				break;
 			}
 
-			oOut = null;
-			return false;
+			refElement.LoadObject(null);
 		}
 
 

@@ -959,7 +959,7 @@ namespace TestCilbox
 			};
 
 			MethodInfo method = typeof(Cilbox.CilboxProxy).GetMethod(
-				"LoadObjectFromProxyField",
+				"LoadProxyFieldStackElement",
 				BindingFlags.Instance | BindingFlags.NonPublic);
 			if( method == null )
 			{
@@ -969,7 +969,8 @@ namespace TestCilbox
 
 			try
 			{
-				object[] args = new object[] { spf, null, "badField" };
+				StackElement refElement = default;
+				object[] args = new object[] { spf, refElement, "badField" };
 				object result = method.Invoke(proxy, args);
 				bool loaded = result is bool b && b;
 				Validator.Set("Negative fieldsObjects index", loaded ? "loaded" : "ignored");
