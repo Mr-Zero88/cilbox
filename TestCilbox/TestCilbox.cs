@@ -793,6 +793,11 @@ namespace TestCilbox
 			Validator.Validate("Ulong Array Assigned 0", ulong.MaxValue.ToString());
 			Validator.Validate("Ulong Array Assigned 1", "42");
 
+			Validator.Validate("Long Array Assigned Length", "3");
+			Validator.Validate("Long Array Assigned 0", "-1");
+			Validator.Validate("Long Array Assigned 1", "9876543210");
+			Validator.Validate("Long Array Assigned 2", long.MinValue.ToString());
+
 			Validator.Validate("Char Array With Data Length", "3");
 			Validator.Validate("Char Array With Data 0", "a");
 			Validator.Validate("Char Array With Data 1", "4660");

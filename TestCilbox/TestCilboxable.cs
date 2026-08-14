@@ -572,6 +572,15 @@ namespace TestCilbox
 			Validator.Set("Ulong Array Assigned 0", ulongAssigned[0].ToString() );
 			Validator.Set("Ulong Array Assigned 1", ulongAssigned[1].ToString() );
 
+			long[] longAssigned = new long[3];
+			longAssigned[0] = -1L;
+			longAssigned[1] = 9876543210L;
+			longAssigned[2] = long.MinValue;
+			Validator.Set("Long Array Assigned Length", longAssigned.Length.ToString());
+			Validator.Set("Long Array Assigned 0", longAssigned[0].ToString());
+			Validator.Set("Long Array Assigned 1", longAssigned[1].ToString());
+			Validator.Set("Long Array Assigned 2", longAssigned[2].ToString());
+
 			char[] charWithData = new char[3];
 			charWithData[0] = 'a';
 			charWithData[1] = '\u1234';
