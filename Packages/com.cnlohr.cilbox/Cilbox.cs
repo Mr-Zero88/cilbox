@@ -2052,7 +2052,7 @@ spiperf.End();
 		private static readonly string[] importFunctionNames = BuildImportFunctionNames();
 		private static string[] BuildImportFunctionNames()
 		{
-			string[] names = Enum.GetNames<ImportFunctionID>();
+			string[] names = Enum.GetNames(typeof(ImportFunctionID));
 			names[0] = ".ctor";
 			return names;
 		}
