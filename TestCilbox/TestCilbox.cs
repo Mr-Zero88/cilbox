@@ -26,10 +26,14 @@ namespace TestCilbox
 			"TestCilbox.TestUtil",
 			"System.Math",
 			"System.Array",
+			"System.Action",
 			"System.Boolean",
 			"System.Byte",
 			"System.Char",
 			"System.Collections.Generic.Dictionary",
+			"System.Comparison",
+			"System.Func",
+			"System.Predicate",
 			"System.Collections.Generic.Dictionary+KeyCollection",
 			"System.Collections.Generic.IEnumerable",
 			"System.Double",
@@ -267,6 +271,17 @@ namespace TestCilbox
 		{
 			i = 42;
 		}
+
+		public static int CallFunc0( Func<int> f ) { return f(); }
+		public static int CallFunc1( Func<int,int> f, int a ) { return f( a ); }
+		public static string CallFunc2( Func<int,int,string> f, int a, int b ) { return f( a, b ); }
+		public static float CallFunc3( Func<int,int,int,float> f, int a, int b, int c ) { return f( a, b, c ); }
+		public static int CallFunc4( Func<int,int,int,int,int> f, int a, int b, int c, int d ) { return f( a, b, c, d ); }
+		public static bool CallPredicate( Predicate<int> p, int a ) { return p( a ); }
+		public static int CallComparison( Comparison<int> c, int a, int b ) { return c( a, b ); }
+		public static TestEnum CallFuncEnum( Func<int,TestEnum> f, int a ) { return f( a ); }
+		public static string CallFuncNull( Func<int,string> f, int a ) { return f( a ); }
+		public static void CallAction( Action<int> a, int v ) { a( v ); }
 	}
 
 
@@ -903,6 +918,17 @@ namespace TestCilbox
 			Validator.Validate("NegDouble", "-0.1");
 			Validator.Validate("NegDoubleNan", "NaN");
 			Validator.Validate("NegDoubleInfinity", "Infinity");
+
+			Validator.Validate("DelegateFunc0", "11");
+			Validator.Validate("DelegateFunc1", "42");
+			Validator.Validate("DelegateFunc2", "1:2");
+			Validator.Validate("DelegateFunc3", "3");
+			Validator.Validate("DelegateFunc4", "10");
+			Validator.Validate("DelegatePredicate", "True");
+			Validator.Validate("DelegateComparison", "1");
+			Validator.Validate("DelegateFuncEnum", "SecondValue");
+			Validator.Validate("DelegateFuncNull", "True");
+			Validator.Validate("DelegateAction", "9");
 
 			Cilbox.CilboxProxy getCompDriverProxy = getCompDriverGo.GetComponents<Cilbox.CilboxProxy>()[0];
 			InvokeProxyMethod( getCompDriverProxy, "Start" );

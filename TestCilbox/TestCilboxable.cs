@@ -755,7 +755,29 @@ namespace TestCilbox
 
 			double negDoubleInfinity = double.NegativeInfinity;
 			Validator.Set("NegDoubleInfinity", (-negDoubleInfinity).ToString(CultureInfo.InvariantCulture));
+
+			Validator.Set("DelegateFunc0", TestUtil.CallFunc0(DelegateZero).ToString());
+			Validator.Set("DelegateFunc1", TestUtil.CallFunc1(DelegateDouble, 21).ToString());
+			Validator.Set("DelegateFunc2", TestUtil.CallFunc2(DelegateJoin, 1, 2));
+			Validator.Set("DelegateFunc3", TestUtil.CallFunc3(DelegateScale, 1, 2, 3).ToString());
+			Validator.Set("DelegateFunc4", TestUtil.CallFunc4(DelegateSum4, 1, 2, 3, 4).ToString());
+			Validator.Set("DelegatePredicate", TestUtil.CallPredicate(DelegateIsEven, 4).ToString());
+			Validator.Set("DelegateComparison", TestUtil.CallComparison(DelegateCompare, 7, 3).ToString());
+			Validator.Set("DelegateFuncEnum", TestUtil.CallFuncEnum(DelegateToEnum, 1).ToString());
+			Validator.Set("DelegateFuncNull", (TestUtil.CallFuncNull(DelegateNullString, 0) == null).ToString());
+			TestUtil.CallAction(DelegateRecord, 9);
 		}
+
+		public int DelegateZero() { return 11; }
+		public int DelegateDouble(int a) { return a * 2; }
+		public string DelegateJoin(int a, int b) { return a.ToString() + ":" + b.ToString(); }
+		public float DelegateScale(int a, int b, int c) { return (a + b + c) * 0.5f; }
+		public int DelegateSum4(int a, int b, int c, int d) { return a + b + c + d; }
+		public bool DelegateIsEven(int a) { return (a % 2) == 0; }
+		public int DelegateCompare(int a, int b) { return a.CompareTo(b); }
+		public TestEnum DelegateToEnum(int a) { return a == 1 ? TestEnum.SecondValue : TestEnum.FirstValue; }
+		public string DelegateNullString(int a) { return null; }
+		public void DelegateRecord(int a) { Validator.Set("DelegateAction", a.ToString()); }
 
 		public void Update()
 		{
