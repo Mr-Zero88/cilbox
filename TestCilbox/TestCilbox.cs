@@ -965,13 +965,14 @@ namespace TestCilbox
 			Cilbox.CilboxProxy proxy = new Cilbox.CilboxProxy();
 			proxy.fieldsObjects = new List<UnityEngine.Object>();
 
-			Dictionary<string, Serializee> dict = new Dictionary<string, Serializee>();
-			dict["t"] = new Serializee("obj");
-			dict["fo"] = new Serializee("-1");
-			Serializee serialized = new Serializee(dict);
+			SerializedProxyField spf  = new SerializedProxyField
+			{
+				fieldType = (byte)ProxyFieldType.ObjectRef,
+				fieldObjectIndex = -1,
+			};
 
 			MethodInfo method = typeof(Cilbox.CilboxProxy).GetMethod(
-				"LoadObjectFromSerializee",
+				"LoadProxyFieldStackElement",
 				BindingFlags.Instance | BindingFlags.NonPublic);
 			if( method == null )
 			{
@@ -981,7 +982,8 @@ namespace TestCilbox
 
 			try
 			{
-				object[] args = new object[] { serialized, null, "badField", typeof(UnityEngine.Object), true, null };
+				StackElement refElement = default;
+				object[] args = new object[] { spf, refElement, "badField" };
 				object result = method.Invoke(proxy, args);
 				bool loaded = result is bool b && b;
 				Validator.Set("Negative fieldsObjects index", loaded ? "loaded" : "ignored");
